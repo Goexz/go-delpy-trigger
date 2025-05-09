@@ -1,27 +1,32 @@
-name: Deploy X
+name: Deploy Go Web to Render
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      
+name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-go@v4
-        with:
-          node-version: '1.21'
+      
+name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
 
-      - name: Build Go app
-        run: go build -o main
+      
+name: Build Go app
+      run: go build -o mainapi
 
-      - name: Build Docker image
-        run: docker build -t go-web-app .
-
-      - name: Deploy to server_render
-        run: |
-          curl -X POST ${{secrets.RENDER_DEPLOY_HOOK}}
+      
+name: Build Docker image
+      run: docker build -t go-web-app .
+      
+name: Trigger deploy on Render
+      run: |
+        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
