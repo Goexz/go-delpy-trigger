@@ -8,4 +8,4 @@ RUN go build -o mainapi
 
 EXPOSE 8080
 
-CMD [ "/.mainapi" ]
+CMD [ "./mainapi" ]
