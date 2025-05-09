@@ -1,0 +1,27 @@
+name: Deploy X
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-go@v4
+        with:
+          node-version: '1.21'
+
+      - name: Build Go app
+        run: go build -o main
+
+      - name: Build Docker image
+        run: docker build -t go-web-app .
+
+      - name: Deploy to server_render
+        run: |
+          curl -X POST ${{secrets.RENDER_DEPLOY_HOOK}}
