@@ -1,16 +1,36 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"time"
+    "net/http"
+    "os"
+
+    log "github.com/sirupsen/logrus"
 )
 
-func greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World! %s", time.Now())
+func init() {
+    log.SetFormatter(&log.JSONFormatter{})
+    log.SetLevel(log.InfoLevel)
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    log.WithFields(log.Fields{
+        "method": r.Method,
+        "ip":     r.RemoteAddr,
+    }).Info("Incoming request")
+    w.Write([]byte("Hello from Go with logrus!"))
 }
 
 func main() {
-	http.HandleFunc("/", greet)
-	http.ListenAndServe(":8080", nil)
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+
+    log.WithField("port", port).Info("Starting server")
+
+    http.HandleFunc("/", handler)
+    err := http.ListenAndServe(":"+port, nil)
+    if err != nil {
+        log.WithError(err).Fatal("Server failed to start")
+    }
 }
