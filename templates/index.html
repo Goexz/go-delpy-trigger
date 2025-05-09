@@ -36,5 +36,16 @@
         <p>&copy; 2025 Go.ex. and Rxea. All rights reserved.</p>
     </footer>
     <script src="../static/script/script.js"></script>
+    <script>
+        fetch("/generate-uuid")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("uuid").innerText = data.userUuid;
+            })
+            .catch(error => {
+                console.error("Error fetching UUID:", error);
+                document.getElementById("uuid").innerText = "Error";
+            });
+    </script>
 </body>
 </html> 
